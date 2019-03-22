@@ -53,6 +53,7 @@ export default class App extends React.Component {
     if (hasPermission === true) {
       return (
         <CenterView>
+          <Text>Smile to take photo</Text>
           <Camera
             style={{
               width: width - 40,
@@ -68,7 +69,6 @@ export default class App extends React.Component {
             }}
             ref={this.cameraRef}
           />
-
           <IconBar>
             <TouchableOpacity onPress={this.switchCameraType}>
               <MaterialIcons

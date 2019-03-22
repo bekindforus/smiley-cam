@@ -142,15 +142,20 @@ export default class App extends React.Component {
     try {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       if (status === "granted") {
-        // const asset = await MediaLibrary.createAssetAsync(uri);
+        const asset = await MediaLibrary.createAssetAsync(uri);
         let album = await MediaLibrary.getAlbumAsync(ALBUM_NAME);
         if (album === null) {
-          album = await MediaLibrary.createAlbumAsync(
-            ALBUM_NAME,
-            Platform.OS !== "iOS" ? asset : null
-          );
+          album = await MediaLibrary.createAlbumAsync(ALBUM_NAME, asset);
         } else {
+          await MediaLibrary.addAssetsToAlbumAsync([asset], album.id);
         }
+        setTimeout(
+          () =>
+            this.setState({
+              smileDetected: false
+            }),
+          2000
+        );
       } else {
         this.setState({ hasPermission: false });
       }

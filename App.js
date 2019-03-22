@@ -1,10 +1,17 @@
 import React from "react";
-import { ActivityIndicator, Dimensions, TouchableOpacity } from "react-native";
-import { Camera, Permissions, FaceDetector, FileSystem } from "expo";
+import {
+  ActivityIndicator,
+  Dimensions,
+  TouchableOpacity,
+  Platform
+} from "react-native";
+import { Camera, Permissions, FaceDetector, MediaLibrary } from "expo";
 import styled from "styled-components";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
+
+const ALBUM_NAME = "Smiley Cam";
 
 const CenterView = styled.View`
   flex: 1;
@@ -131,5 +138,24 @@ export default class App extends React.Component {
       });
     }
   };
-  savePhoto = async uri => {};
+  savePhoto = async uri => {
+    try {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status === "granted") {
+        // const asset = await MediaLibrary.createAssetAsync(uri);
+        let album = await MediaLibrary.getAlbumAsync(ALBUM_NAME);
+        if (album === null) {
+          album = await MediaLibrary.createAlbumAsync(
+            ALBUM_NAME,
+            Platform.OS !== "iOS" ? asset : null
+          );
+        } else {
+        }
+      } else {
+        this.setState({ hasPermission: false });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 }
